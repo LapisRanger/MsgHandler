@@ -1,0 +1,2 @@
+rootProject.name='MsgHandler'
+include ':app'
