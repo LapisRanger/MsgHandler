@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -20,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
 
     private int progress=0;
-
+    /*
     private Handler handler=new Handler(){
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setProgress(msg.arg1);
         }
     };
-
+    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,19 +47,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Thread thread=new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 while(true){
                     progress++;
-
+                    /*
                     Message msg=handler.obtainMessage();
                     msg.arg1=progress;
                     handler.sendMessage(msg);
+                    */
 
                     if(progress>100){
                         progress=0;
                     }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textView.setText(progress+"%");
+                            progressBar.setProgress(progress);
+                        }
+                    });
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
@@ -66,9 +75,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-        });
+        }).start();
 
-        thread.start();
+        Log.d("RunOnUiThread",Thread.currentThread().getName());
     }
 
 }
